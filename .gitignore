@@ -1,0 +1,46 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.swp
+*.tmp
+*.bak
+*.orig
+
+# Archivos de configuración del sistema
+*.class
+*.jar
+*.war
+*.ear
+
+# Archivos de seguridad / claves
+*.keystore
+
+# Archivos de configuración de entorno
+.env
+application.properties
+application.yml
+
+# Copilot y otros plugins
+copilot.json
+
+# Carpeta de pruebas locales (opcional)
+local-test/
