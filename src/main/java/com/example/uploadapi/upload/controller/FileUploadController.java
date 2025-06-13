@@ -8,17 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.example.uploadapi.constants.ApiConstants.BASE_URL_AUTH;
+import static com.example.uploadapi.constants.ApiConstants.BASE_URL_UPLOAD;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(BASE_URL_UPLOAD)
 public class FileUploadController {
 
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/login")
+    @PostMapping("/")
     public ResponseEntity<String> login(@RequestParam String username) {
         // Solo para ejemplo: podrías validar con un usuario real
-        String token = jwtUtil.generateToken(username);
-        return ResponseEntity.ok(token);
     }
 }
