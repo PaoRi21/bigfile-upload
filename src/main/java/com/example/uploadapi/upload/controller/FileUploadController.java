@@ -1,17 +1,20 @@
 package com.example.uploadapi.upload.controller;
 
+import com.example.uploadapi.service.S3UploadService;
 import com.example.uploadapi.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
 
-import javax.persistence.PreRemove;
+
+import java.io.IOException;
 
 import static com.example.uploadapi.constants.ApiConstants.BASE_URL_UPLOAD;
 
@@ -20,25 +23,30 @@ import static com.example.uploadapi.constants.ApiConstants.BASE_URL_UPLOAD;
 @Tag(name = "Carga de Archivos",
         description = "Operaciones relacionadas con la carga de archivos")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class FileUploadController {
 
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/upload")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    @Operation(summary = "Subir archivo", description = "Permite subir un archivo si estás autenticado")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El archivo está vacío");
-        }
+    @Autowired
+    private S3Client s3Client;
 
-        // Simulamos que se subió correctamente
-        return ResponseEntity.ok("Archivo " + file.getOriginalFilename() + " subido correctamente.");
+    private final S3UploadService s3UploadService;
+
+    @PostMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @Operation(
+            summary = "Subir archivo a S3",
+            description = "Permite subir un archivo si estás autenticado")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println("🔄 Subiendo archivo: " + file.getOriginalFilename());
+        String result = s3UploadService.uploadFile(file);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/test")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(
             summary = "Test de autenticación",
             description = "Prueba si el token JWT es válido"

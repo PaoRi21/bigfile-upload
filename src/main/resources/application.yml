@@ -11,3 +11,8 @@ spring:
 
 jwt:
   secret: TuClaveSuperSecreta1234567890123456
+
+
+aws:
+  accessKeyId: ACCESS_KEY
+  secretAccessKey: SECRET_KEY
