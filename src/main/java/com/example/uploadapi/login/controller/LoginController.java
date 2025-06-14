@@ -1,25 +1,28 @@
-package com.example.uploadapi.controller;
+package com.example.uploadapi.login.controller;
 
-import com.example.uploadapi.dto.LoginRequest;
 import com.example.uploadapi.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.*;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import java.util.Map;
 
 import static com.example.uploadapi.constants.ApiConstants.BASE_URL_AUTH;
 
 @RestController
 @RequestMapping(BASE_URL_AUTH)
-@Tag(name = "Autenticación", description = "Controlador para iniciar sesión y generar token JWT")
+@Tag(name = "Autenticación",
+        description = "Controlador para iniciar sesión y generar token JWT")
 public class LoginController {
 
     @Autowired
@@ -28,43 +31,28 @@ public class LoginController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Operation(
-            summary = "Iniciar sesión",
-            description = "Recibe credenciales y devuelve un JWT si son válidas",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Token generado exitosamente",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(example = "{\"token\": \"JWT_TOKEN_GENERADO\"}")
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Credenciales inválidas",
-                            content = @Content(schema = @Schema(example = "\"Credenciales inválidas\""))
-                    )
-            }
-    )
+    @Operation(summary = "Login", description = "Autentica al usuario y devuelve un token JWT")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()
-                    )
-            );
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
-        }
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String username = credentials.get("username");
+        String password = credentials.get("password");
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        final String token = jwtUtil.generateToken(userDetails.getUsername());
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password));
 
-        return ResponseEntity.ok(Collections.singletonMap("token", token));
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("USER");
+
+        String token = jwtUtil.generateToken(username, role);
+
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "username", username,
+                "role", role
+        ));
     }
 }

@@ -11,13 +11,19 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.*;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration class for Spring Security.
+ * Defines security settings, authentication providers, and user details management.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -25,6 +31,11 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
+    /**
+     * Configures an in-memory user details service with predefined users.
+     *
+     * @return an instance of {@link UserDetailsService}.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
@@ -42,7 +53,14 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin, operador);
     }
 
-
+    /**
+     * Configures the security filter chain for HTTP requests.
+     * Disables CSRF, sets session management to stateless, and adds the JWT filter.
+     *
+     * @param http the {@link HttpSecurity} object to configure.
+     * @return the configured {@link SecurityFilterChain}.
+     * @throws Exception if an error occurs during configuration.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
@@ -59,6 +77,11 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * Configures the authentication provider using a DAO-based approach.
+     *
+     * @return an instance of {@link AuthenticationProvider}.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -67,11 +90,23 @@ public class SecurityConfig {
         return provider;
     }
 
+    /**
+     * Configures the password encoder to use BCrypt hashing.
+     *
+     * @return an instance of {@link PasswordEncoder}.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the authentication manager.
+     *
+     * @param config the {@link AuthenticationConfiguration} object.
+     * @return the configured {@link AuthenticationManager}.
+     * @throws Exception if an error occurs during configuration.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

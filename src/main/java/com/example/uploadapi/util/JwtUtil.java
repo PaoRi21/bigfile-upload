@@ -1,6 +1,9 @@
 package com.example.uploadapi.util;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,39 +15,47 @@ import java.util.Date;
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
-    private final long EXPIRATION_TIME = 86400000;
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
+    private static final String SECRET_KEY = "mi_clave_super_secreta_para_jwt_que_debe_ser_larga";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
 
-    public String generateToken(String username) {
+    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
+                .claim("role", role)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSigningKey())
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
+                    .setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (JwtException e) {
             return false;
         }
     }
 
-    public String getUsernameFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(getSigningKey())
+    public String extractUsername(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+        return claims.getSubject();
+    }
+
+    public String extractUserRole(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("role", String.class);
     }
 }
