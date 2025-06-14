@@ -25,8 +25,9 @@ public class FileUploadController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Operation(summary = "Subir archivo", description = "Permite subir un archivo si estás autenticado")
     @PostMapping("/upload")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @Operation(summary = "Subir archivo", description = "Permite subir un archivo si estás autenticado")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El archivo está vacío");
