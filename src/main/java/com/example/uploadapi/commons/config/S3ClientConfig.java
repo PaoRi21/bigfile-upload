@@ -1,6 +1,6 @@
-package com.example.uploadapi.config;
+package com.example.uploadapi.commons.config;
 
-import com.example.uploadapi.config.properties.AwsSecretsProperties;
+import com.example.uploadapi.commons.dto.AwsSecretsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;

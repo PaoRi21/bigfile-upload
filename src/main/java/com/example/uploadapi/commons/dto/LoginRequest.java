@@ -1,4 +1,4 @@
-package com.example.uploadapi.dto;
+package com.example.uploadapi.commons.dto;
 
 import lombok.Data;
 

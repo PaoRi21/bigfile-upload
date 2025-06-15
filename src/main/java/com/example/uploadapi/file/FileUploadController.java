@@ -1,7 +1,7 @@
-package com.example.uploadapi.upload.controller;
+package com.example.uploadapi.file;
 
 import com.example.uploadapi.service.S3UploadService;
-import com.example.uploadapi.util.JwtUtil;
+import com.example.uploadapi.commons.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.IOException;
 
-import static com.example.uploadapi.constants.ApiConstants.BASE_URL_UPLOAD;
+import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_UPLOAD;
 
 @RestController
 @RequestMapping(BASE_URL_UPLOAD)

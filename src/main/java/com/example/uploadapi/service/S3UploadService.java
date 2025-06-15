@@ -1,6 +1,6 @@
 package com.example.uploadapi.service;
 
-import com.example.uploadapi.config.properties.AwsSecretsProperties;
+import com.example.uploadapi.commons.dto.AwsSecretsProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

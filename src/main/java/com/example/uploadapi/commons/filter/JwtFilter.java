@@ -1,6 +1,6 @@
-package com.example.uploadapi.filter;
+package com.example.uploadapi.commons.filter;
 
-import com.example.uploadapi.util.JwtUtil;
+import com.example.uploadapi.commons.util.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

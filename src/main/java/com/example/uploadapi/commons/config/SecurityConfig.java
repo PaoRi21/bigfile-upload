@@ -1,6 +1,6 @@
-package com.example.uploadapi.config;
+package com.example.uploadapi.commons.config;
 
-import com.example.uploadapi.filter.JwtFilter;
+import com.example.uploadapi.commons.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

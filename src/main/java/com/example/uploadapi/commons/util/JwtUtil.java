@@ -1,4 +1,4 @@
-package com.example.uploadapi.util;
+package com.example.uploadapi.commons.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

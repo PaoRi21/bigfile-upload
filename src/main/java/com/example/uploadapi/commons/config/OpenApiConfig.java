@@ -1,4 +1,4 @@
-package com.example.uploadapi.config;
+package com.example.uploadapi.commons.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

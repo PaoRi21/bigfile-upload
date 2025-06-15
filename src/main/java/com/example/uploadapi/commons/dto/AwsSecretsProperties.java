@@ -1,4 +1,4 @@
-package com.example.uploadapi.config.properties;
+package com.example.uploadapi.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

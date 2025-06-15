@@ -1,4 +1,4 @@
-package com.example.uploadapi.constants;
+package com.example.uploadapi.commons.constants;
 
 import lombok.NoArgsConstructor;
 

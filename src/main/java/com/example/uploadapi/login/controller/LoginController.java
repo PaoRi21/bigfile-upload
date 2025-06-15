@@ -1,6 +1,6 @@
 package com.example.uploadapi.login.controller;
 
-import com.example.uploadapi.util.JwtUtil;
+import com.example.uploadapi.commons.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-import static com.example.uploadapi.constants.ApiConstants.BASE_URL_AUTH;
+import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_AUTH;
 
 @RestController
 @RequestMapping(BASE_URL_AUTH)
