@@ -13,13 +13,11 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String secret;
-
     private static final String SECRET_KEY = "mi_clave_super_secreta_para_jwt_que_debe_ser_larga";
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
-
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    @Value("${jwt.secret}")
+    private String secret;
 
     public String generateToken(String username, String role) {
         return Jwts.builder()

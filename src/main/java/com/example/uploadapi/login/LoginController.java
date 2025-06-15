@@ -1,4 +1,4 @@
-package com.example.uploadapi.login.controller;
+package com.example.uploadapi.login;
 
 import com.example.uploadapi.commons.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;

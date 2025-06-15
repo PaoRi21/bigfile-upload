@@ -15,14 +15,12 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 @Slf4j
 @Configuration
 public class AwsSecretsLoaderConfig {
-    @Value("${aws.accessKeyId}")
-    private String fallbackAccessKey;
-
-    @Value("${aws.secretAccessKey}")
-    private String fallbackSecretKey;
-
     private final String SECRET_NAME = "bigfile/upload/creds";
     private final Region AWS_REGION = Region.US_EAST_1;
+    @Value("${aws.accessKeyId}")
+    private String fallbackAccessKey;
+    @Value("${aws.secretAccessKey}")
+    private String fallbackSecretKey;
 
     @Bean
     public AwsSecretsProperties awsSecretsProperties() {
