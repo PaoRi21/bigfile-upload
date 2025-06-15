@@ -52,7 +52,7 @@ public class S3UploadService {
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("fileName", fileName);
-        metadata.put("size", response.contentLength());
+        metadata.put("sizeMb", String.format("%.2f MB", (double) response.contentLength() / (1024 * 1024)));
         metadata.put("contentType", response.contentType());
         metadata.put("lastModified", response.lastModified());
         return metadata;
