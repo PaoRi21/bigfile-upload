@@ -14,42 +14,72 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Servicio para manejar la lógica de interacción con AWS S3.
+ * Proporciona métodos para subir archivos y obtener metadata de archivos almacenados en S3.
+ */
 @Service
 @RequiredArgsConstructor
 public class S3UploadService {
+    /**
+     * Cliente de AWS S3 utilizado para interactuar con el servicio de almacenamiento.
+     */
     private final S3Client s3Client;
+
+    /**
+     * Propiedades de configuración relacionadas con los secretos de AWS, como el nombre del bucket.
+     */
     private final AwsSecretsProperties awsSecrets;
 
+    /**
+     * Sube un archivo al bucket de AWS S3 especificado en las propiedades de configuración.
+     *
+     * @param file el archivo que se desea subir, proporcionado como un objeto MultipartFile.
+     * @return un mensaje indicando que el archivo se subió correctamente, incluyendo su nombre.
+     * @throws RuntimeException si ocurre un error durante la subida del archivo.
+     */
     public String uploadFile(MultipartFile file) {
         String bucketName = awsSecrets.getBucketName();
         String fileName = file.getOriginalFilename();
 
         try {
+            // Construir la solicitud para subir el archivo a S3.
             PutObjectRequest request = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileName)
                     .contentType(file.getContentType())
                     .build();
 
+            // Subir el archivo utilizando el cliente S3.
             s3Client.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
             return "Archivo subido correctamente: " + fileName;
 
         } catch (IOException e) {
+            // Lanzar una excepción si ocurre un error durante la subida.
             throw new RuntimeException("Error al subir archivo a S3", e);
         }
     }
 
+    /**
+     * Obtiene la metadata de un archivo almacenado en el bucket de AWS S3.
+     *
+     * @param fileName el nombre del archivo del cual se desea obtener la metadata.
+     * @return un mapa que contiene información sobre el archivo, como tamaño, tipo de contenido y última modificación.
+     */
     public Map<String, Object> getFileMetadata(String fileName) {
         String bucketName = awsSecrets.getBucketName();
 
+        // Construir la solicitud para obtener la metadata del archivo.
         HeadObjectRequest request = HeadObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
                 .build();
 
+        // Obtener la respuesta con la metadata del archivo.
         HeadObjectResponse response = s3Client.headObject(request);
 
+        // Crear un mapa con la información obtenida.
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("fileName", fileName);
         metadata.put("sizeMb", String.format("%.2f MB", (double) response.contentLength() / (1024 * 1024)));

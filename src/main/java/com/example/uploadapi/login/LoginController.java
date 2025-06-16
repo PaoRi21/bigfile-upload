@@ -19,36 +19,58 @@ import java.util.Map;
 
 import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_AUTH;
 
+/**
+ * Controlador para la autenticación de usuarios.
+ * Proporciona un endpoint para iniciar sesión y generar un token JWT.
+ */
 @RestController
 @RequestMapping(BASE_URL_AUTH)
 @Tag(name = "Autenticación",
         description = "Controlador para iniciar sesión y generar token JWT")
 public class LoginController {
 
+    /**
+     * Administrador de autenticación utilizado para validar las credenciales del usuario.
+     */
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * Utilidad para manejar operaciones relacionadas con JWT, como generación y validación de tokens.
+     */
     @Autowired
     private JwtUtil jwtUtil;
 
+    /**
+     * Endpoint para autenticar al usuario y devolver un token JWT.
+     *
+     * @param credentials un mapa que contiene las credenciales del usuario (nombre de usuario y contraseña).
+     * @return una respuesta HTTP con el token JWT, el nombre de usuario y el rol del usuario autenticado.
+     */
     @Operation(summary = "Login", description = "Autentica al usuario y devuelve un token JWT")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        // Extraer el nombre de usuario y la contraseña de las credenciales proporcionadas.
         String username = credentials.get("username");
         String password = credentials.get("password");
 
+        // Autenticar al usuario utilizando el AuthenticationManager.
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
 
+        // Obtener los detalles del usuario autenticado.
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
+        // Extraer el rol del usuario a partir de sus autoridades.
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("USER");
 
+        // Generar un token JWT utilizando el nombre de usuario y el rol.
         String token = jwtUtil.generateToken(username, role);
 
+        // Devolver una respuesta HTTP con el token, el nombre de usuario y el rol.
         return ResponseEntity.ok(Map.of(
                 "token", token,
                 "username", username,

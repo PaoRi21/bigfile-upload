@@ -19,6 +19,10 @@ import java.util.Map;
 
 import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_FILE;
 
+/**
+ * Controlador para la consulta de metadata de archivos en AWS S3.
+ * Proporciona un endpoint para obtener información detallada de un archivo específico.
+ */
 @RestController
 @RequestMapping(BASE_URL_FILE)
 @Tag(name = "Consulta de Archivos",
@@ -27,19 +31,36 @@ import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_FILE
 @RequiredArgsConstructor
 public class GetFileMetadataController {
 
+    /**
+     * Servicio para manejar la lógica de interacción con AWS S3.
+     */
     private final S3UploadService s3UploadService;
+
+    /**
+     * Utilidad para manejar operaciones relacionadas con JWT.
+     */
     @Autowired
     private JwtUtil jwtUtil;
 
+    /**
+     * Endpoint para obtener la metadata de un archivo en AWS S3.
+     * Requiere autenticación y autorización con roles 'ADMIN' o 'USER'.
+     *
+     * @param filename el nombre del archivo del cual se desea obtener la metadata.
+     * @return una respuesta HTTP con la metadata del archivo o un mensaje de error si el archivo no se encuentra.
+     */
     @GetMapping("/metadata")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> getMetadata(@RequestParam String filename) {
         try {
+            // Obtener la metadata del archivo utilizando el servicio S3UploadService.
             Map<String, Object> metadata = s3UploadService.getFileMetadata(filename);
             return ResponseEntity.ok(metadata);
         } catch (NoSuchKeyException e) {
+            // Manejar el caso en que el archivo no se encuentra en S3.
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Archivo no encontrado");
         } catch (Exception e) {
+            // Manejar errores generales durante la obtención de metadata.
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener metadata");
         }
     }

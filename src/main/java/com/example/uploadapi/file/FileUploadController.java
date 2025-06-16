@@ -20,6 +20,10 @@ import java.io.IOException;
 
 import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_FILE;
 
+/**
+ * Controlador para la carga de archivos en AWS S3.
+ * Proporciona un endpoint para subir archivos autenticados con roles específicos.
+ */
 @RestController
 @RequestMapping(BASE_URL_FILE)
 @Tag(name = "Carga de Archivos",
@@ -28,12 +32,31 @@ import static com.example.uploadapi.commons.constants.ApiConstants.BASE_URL_FILE
 @RequiredArgsConstructor
 public class FileUploadController {
 
+    /**
+     * Servicio para manejar la lógica de carga de archivos en S3.
+     */
     private final S3UploadService s3UploadService;
+
+    /**
+     * Utilidad para manejar operaciones relacionadas con JWT.
+     */
     @Autowired
     private JwtUtil jwtUtil;
+
+    /**
+     * Cliente de AWS S3 utilizado para interactuar con el servicio de almacenamiento.
+     */
     @Autowired
     private S3Client s3Client;
 
+    /**
+     * Endpoint para subir un archivo a AWS S3.
+     * Requiere autenticación y autorización con roles 'ROLE_ADMIN' o 'ROLE_USER'.
+     *
+     * @param file el archivo que se desea subir, proporcionado como un parámetro de solicitud.
+     * @return una respuesta HTTP con el resultado de la operación de carga.
+     * @throws IOException si ocurre un error durante la lectura o escritura del archivo.
+     */
     @PostMapping("/upload")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(
