@@ -17,3 +17,13 @@ jwt:
 aws:
   accessKeyId: ACCESS_KEY
   secretAccessKey: SECRET_KEY
+
+app:
+  admin:
+    username: admin
+    password: admin_123
+    role: ADMIN
+  user:
+    username: admin
+    password: admin_123
+    role: USER

@@ -2,6 +2,7 @@ package com.example.uploadapi.commons.config;
 
 import com.example.uploadapi.commons.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,24 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
+    @Value("${app.admin.username}")
+    private String adminUsername;
+
+    @Value("${app.admin.password}")
+    private String adminPassword;
+
+    @Value("${app.admin.role}")
+    private String adminRole;
+
+    @Value("${app.user.username}")
+    private String userUsername;
+
+    @Value("${app.user.password}")
+    private String userPassword;
+
+    @Value("${app.user.role}")
+    private String userRole;
+
     /**
      * Configures an in-memory user details service with predefined users.
      *
@@ -38,19 +57,20 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService() {
+
         UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin123"))
-                .roles("ADMIN")
+                .username(adminUsername)
+                .password(passwordEncoder().encode(adminPassword))
+                .roles(adminRole)
                 .build();
 
-        UserDetails operador = User.builder()
-                .username("operador")
-                .password(passwordEncoder().encode("operador123"))
-                .roles("USER")
+        UserDetails user = User.builder()
+                .username(userUsername)
+                .password(passwordEncoder().encode(userPassword))
+                .roles(userRole)
                 .build();
 
-        return new InMemoryUserDetailsManager(admin, operador);
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
     /**
