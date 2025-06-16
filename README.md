@@ -26,6 +26,8 @@ Proyecto Spring Boot que permite la carga de archivos grandes a Amazon S3 de for
 
 ## 📂 Endpoints principales
 
+Swagger: https://pao21.online/swagger-ui/index.html
+
 | Método | URL                                   | Descripción |
 |--------|---------------------------------------|-------------|
 | POST | `/api/v1/file/upload`                | Sube un archivo a S3 |
@@ -68,8 +70,6 @@ El proyecto puede ser desplegado en AWS EC2, usando un IAM Role con permisos par
 
 - `s3:PutObject`, `s3:GetObject`
 - `secretsmanager:GetSecretValue`
-
-Pronto incluirá un script para deploy automatizado.
 
 ---
 
