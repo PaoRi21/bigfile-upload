@@ -50,27 +50,21 @@ public class LoginController {
     @Operation(summary = "Login", description = "Autentica al usuario y devuelve un token JWT")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        // Extraer el nombre de usuario y la contraseña de las credenciales proporcionadas.
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        // Autenticar al usuario utilizando el AuthenticationManager.
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
 
-        // Obtener los detalles del usuario autenticado.
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
-        // Extraer el rol del usuario a partir de sus autoridades.
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("USER");
 
-        // Generar un token JWT utilizando el nombre de usuario y el rol.
         String token = jwtUtil.generateToken(username, role);
 
-        // Devolver una respuesta HTTP con el token, el nombre de usuario y el rol.
         return ResponseEntity.ok(Map.of(
                 "token", token,
                 "username", username,

@@ -1,7 +1,7 @@
 package com.example.uploadapi.file;
 
 import com.example.uploadapi.commons.util.JwtUtil;
-import com.example.uploadapi.service.S3UploadService;
+import com.example.uploadapi.unit.S3StorageService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class GetFileMetadataController {
     /**
      * Servicio para manejar la lógica de interacción con AWS S3.
      */
-    private final S3UploadService s3UploadService;
+    private final S3StorageService s3StorageService;
 
     /**
      * Utilidad para manejar operaciones relacionadas con JWT.
@@ -53,14 +53,11 @@ public class GetFileMetadataController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> getMetadata(@RequestParam String filename) {
         try {
-            // Obtener la metadata del archivo utilizando el servicio S3UploadService.
-            Map<String, Object> metadata = s3UploadService.getFileMetadata(filename);
+            Map<String, Object> metadata = s3StorageService.getFileMetadata(filename);
             return ResponseEntity.ok(metadata);
         } catch (NoSuchKeyException e) {
-            // Manejar el caso en que el archivo no se encuentra en S3.
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Archivo no encontrado");
         } catch (Exception e) {
-            // Manejar errores generales durante la obtención de metadata.
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener metadata");
         }
     }

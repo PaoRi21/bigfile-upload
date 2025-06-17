@@ -37,13 +37,11 @@ public class S3ClientConfig {
      */
     @Bean
     public S3Client s3Client() {
-        // Crear las credenciales básicas de AWS utilizando el ID de acceso y la clave secreta.
         AwsBasicCredentials credentials = AwsBasicCredentials.create(
                 awsSecrets.getAwsAccessKeyId(),
                 awsSecrets.getAwsSecretAccessKey()
         );
 
-        // Construir y devolver el cliente de S3 configurado con las credenciales y la región.
         return S3Client.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .region(Region.of(awsSecrets.getRegion()))

@@ -44,32 +44,27 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Obtener el encabezado de autorización de la solicitud.
         String authHeader = request.getHeader("Authorization");
 
-        // Validar que el encabezado contenga un token JWT válido.
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7); // Extraer el token eliminando el prefijo "Bearer ".
-            if (jwtUtil.validateToken(token)) { // Validar el token utilizando JwtUtil.
-                String username = jwtUtil.extractUsername(token); // Extraer el nombre de usuario del token.
-                String role = jwtUtil.extractUserRole(token); // Extraer el rol del usuario del token.
+            String token = authHeader.substring(7);
+            if (jwtUtil.validateToken(token)) {
+                String username = jwtUtil.extractUsername(token);
+                String role = jwtUtil.extractUserRole(token);
 
-                // Crear un objeto de autenticación con el nombre de usuario y el rol.
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 username,
                                 null,
                                 Collections.singletonList(new SimpleGrantedAuthority(role))
+                                //Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
                         );
-                // Configurar detalles adicionales de la autenticación.
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Establecer el contexto de seguridad con la autenticación.
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 
-        // Continuar con la cadena de filtros.
         filterChain.doFilter(request, response);
     }
 }

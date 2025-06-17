@@ -1,4 +1,4 @@
-package com.example.uploadapi.service;
+package com.example.uploadapi.unit;
 
 import com.example.uploadapi.commons.dto.AwsSecretsProperties;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
-public class S3UploadService {
+public class S3StorageService {
     /**
      * Cliente de AWS S3 utilizado para interactuar con el servicio de almacenamiento.
      */
@@ -43,20 +43,17 @@ public class S3UploadService {
         String fileName = file.getOriginalFilename();
 
         try {
-            // Construir la solicitud para subir el archivo a S3.
             PutObjectRequest request = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileName)
                     .contentType(file.getContentType())
                     .build();
 
-            // Subir el archivo utilizando el cliente S3.
             s3Client.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
             return "Archivo subido correctamente: " + fileName;
 
         } catch (IOException e) {
-            // Lanzar una excepción si ocurre un error durante la subida.
             throw new RuntimeException("Error al subir archivo a S3", e);
         }
     }
@@ -70,16 +67,13 @@ public class S3UploadService {
     public Map<String, Object> getFileMetadata(String fileName) {
         String bucketName = awsSecrets.getBucketName();
 
-        // Construir la solicitud para obtener la metadata del archivo.
         HeadObjectRequest request = HeadObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
                 .build();
 
-        // Obtener la respuesta con la metadata del archivo.
         HeadObjectResponse response = s3Client.headObject(request);
 
-        // Crear un mapa con la información obtenida.
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("fileName", fileName);
         metadata.put("sizeMb", String.format("%.2f MB", (double) response.contentLength() / (1024 * 1024)));

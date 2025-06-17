@@ -1,7 +1,7 @@
 package com.example.uploadapi.file;
 
 import com.example.uploadapi.commons.util.JwtUtil;
-import com.example.uploadapi.service.S3UploadService;
+import com.example.uploadapi.unit.S3StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +35,7 @@ public class FileUploadController {
     /**
      * Servicio para manejar la lógica de carga de archivos en S3.
      */
-    private final S3UploadService s3UploadService;
+    private final S3StorageService s3StorageService;
 
     /**
      * Utilidad para manejar operaciones relacionadas con JWT.
@@ -64,7 +64,7 @@ public class FileUploadController {
             description = "Permite subir un archivo si estás autenticado")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         System.out.println("🔄 Subiendo archivo: " + file.getOriginalFilename());
-        String result = s3UploadService.uploadFile(file);
+        String result = s3StorageService.uploadFile(file);
         return ResponseEntity.ok(result);
     }
 }

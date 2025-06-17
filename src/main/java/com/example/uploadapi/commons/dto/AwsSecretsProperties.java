@@ -31,4 +31,7 @@ public class AwsSecretsProperties {
      * La región de AWS donde se encuentran los recursos.
      */
     private String region;
+
+    public void setAccessKey(String s) {
+    }
 }

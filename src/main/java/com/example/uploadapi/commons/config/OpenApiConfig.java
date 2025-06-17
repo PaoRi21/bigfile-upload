@@ -25,15 +25,15 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API de Carga de Archivos") // Título de la API.
-                        .version("1.0") // Versión de la API.
-                        .description("Servicio para autenticación y carga de archivos grandes")) // Descripción de la API.
+                        .title("API de Carga de Archivos")
+                        .version("1.0")
+                        .description("Servicio para autenticación y carga de archivos grandes"))
                 .components(new Components()
-                        .addSecuritySchemes("bearerAuth", // Nombre del esquema de seguridad.
+                        .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP) // Tipo de esquema de seguridad (HTTP).
-                                        .scheme("bearer") // Esquema utilizado (Bearer).
-                                        .bearerFormat("JWT"))) // Formato del token (JWT).
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth")); // Requisito de seguridad para la API.
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 }

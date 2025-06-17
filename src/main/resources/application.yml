@@ -24,6 +24,6 @@ app:
     password: admin_123
     role: ADMIN
   user:
-    username: admin
+    username: user
     password: admin_123
     role: USER
