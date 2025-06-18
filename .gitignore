@@ -1,5 +1,6 @@
 # IntelliJ IDEA
 .idea/
+.idea/compiler.xml
 *.iml
 
 # Maven

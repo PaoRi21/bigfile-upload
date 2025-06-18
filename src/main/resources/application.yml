@@ -1,4 +1,5 @@
 server:
+  address: 0.0.0.0
   port: 8080
 
 spring:
@@ -11,3 +12,18 @@ spring:
 
 jwt:
   secret: TuClaveSuperSecreta1234567890123456
+
+
+aws:
+  accessKeyId: ACCESS_KEY
+  secretAccessKey: SECRET_KEY
+
+app:
+  admin:
+    username: admin
+    password: admin_123
+    role: ADMIN
+  user:
+    username: user
+    password: user_123
+    role: USER
