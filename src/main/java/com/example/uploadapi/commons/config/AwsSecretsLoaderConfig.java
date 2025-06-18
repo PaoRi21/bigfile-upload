@@ -55,6 +55,9 @@ public class AwsSecretsLoaderConfig {
     @Bean
     public AwsSecretsProperties awsSecretsProperties() {
 
+        //No borrar para probar en local
+        //AwsBasicCredentials baseCreds = AwsBasicCredentials.create(fallbackAccessKey, fallbackSecretKey);
+
         SecretsManagerClient client = SecretsManagerClient.builder()
                 .region(AWS_REGION)
                 //.credentialsProvider(StaticCredentialsProvider.create(baseCreds))

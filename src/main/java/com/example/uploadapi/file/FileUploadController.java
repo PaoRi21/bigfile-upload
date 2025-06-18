@@ -63,7 +63,7 @@ public class FileUploadController {
             summary = "Subir archivo a S3",
             description = "Permite subir un archivo si estás autenticado")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println("🔄 Subiendo archivo: " + file.getOriginalFilename());
+        System.out.println("Subiendo archivo: " + file.getOriginalFilename());
         String result = s3StorageService.uploadFile(file);
         return ResponseEntity.ok(result);
     }
