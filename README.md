@@ -43,9 +43,9 @@ Swagger: https://pao21.online/swagger-ui/index.html
 POST /api/v1/auth/login
 Body:
 {
-  "username": "admin",
-  "password": "admin123",
-  "role": "ADMIN"
+  "username": "username",
+  "password": "password",
+  "role": "role"
 }
 ```
 
@@ -64,6 +64,21 @@ Body:
 
 ---
 
+## 📦 Diagrama de clases
+
+![Editor _ Mermaid Chart-2025-06-18-164002.png](images%2FEditor%20_%20Mermaid%20Chart-2025-06-18-164002.png)
+
+---
+## 📦 Diagrama de sequencia
+
+![Editor _ Mermaid Chart-2025-06-18-164331.png](images%2FEditor%20_%20Mermaid%20Chart-2025-06-18-164331.png)
+
+---
+## 📦 Diagrama de seguridad
+
+![Editor _ Mermaid Chart-2025-06-18-163926.png](images%2FEditor%20_%20Mermaid%20Chart-2025-06-18-163926.png)
+
+---
 ## ☁️ Despliegue
 
 El proyecto puede ser desplegado en AWS EC2, usando un IAM Role con permisos para:
