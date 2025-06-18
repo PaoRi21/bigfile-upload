@@ -10,6 +10,6 @@ jwt:
 
 app:
   admin:
-    username: prueba
-    password: prueba_123
+    username: admin
+    password: 1234
     role: ADMIN

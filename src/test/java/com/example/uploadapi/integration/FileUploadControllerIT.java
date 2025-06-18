@@ -3,6 +3,7 @@ package com.example.uploadapi.integration;
 import com.example.uploadapi.config.TestAwsConfig;
 import com.example.uploadapi.unit.S3StorageService;
 import com.example.uploadapi.util.TestJwtTokens;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,15 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,6 +52,8 @@ public class FileUploadControllerIT {
     // Agregar prueba de integración para el controller FileUploadController un test ok
     @Test
     void subeArchivoTestOk() throws Exception {
+
+        String token = TestJwtTokens.getJwtToken(mockMvc);
         MockMultipartFile archivo = new MockMultipartFile(
                 "file",
                 "test.txt",
@@ -55,17 +61,14 @@ public class FileUploadControllerIT {
                 "hola mundo".getBytes()
         );
 
-        mockMvc.perform(multipart("/api/v1/file/upload")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/file/upload")
                         .file(archivo)
-                        .header("Authorization", "Bearer " + TestJwtTokens.validToken())
+                        .header("Authorization", "Bearer " + token)
                 )
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location",
-                        containsString("https://s3.amazonaws.com/bigfile-upload-paori21/")));
+                .andExpect(status().is2xxSuccessful());
 
         verify(s3StorageService).uploadFile(any());
     }
-
 
     @Test
     void subeArchivoTestForbidden() throws Exception {

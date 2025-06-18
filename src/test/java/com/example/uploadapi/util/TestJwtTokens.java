@@ -1,11 +1,17 @@
 package com.example.uploadapi.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Date;
-import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TestJwtTokens {
 
@@ -29,5 +35,29 @@ public class TestJwtTokens {
                 .setExpiration(new Date(System.currentTimeMillis() + 3600_000)) // 1 hora
                 .signWith(SignatureAlgorithm.HS256, SECRET.getBytes())
                 .compact();
+    }
+
+    public static String getJwtToken(MockMvc mockMvc) throws Exception {
+        String requestBody = """
+        {
+            "username": "admin",
+            "password": "1234"
+        }
+        """;
+
+        MvcResult result = mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("*** RESPUESTA LOGIN = " + response);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(response);
+        System.out.println("*** TOKEN: " + jsonNode.fieldNames().next());
+
+        return new ObjectMapper().readTree(response).get("token").asText();
     }
 }
